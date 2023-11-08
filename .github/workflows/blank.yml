@@ -1,0 +1,17 @@
+name: CI
+on:
+ push:
+  branches : [main]
+ pull_request:
+  branches : [main]
+jobs:
+ Build:
+   runs-on: ubuntu-latest
+   steps:
+      - uses: action/checkout@v3
+# runs a test
+      - name: run only on windows
+        run: |
+         echo gatting variable from the application ${{vars.Application}} and Environment is $ {{vars.Devlopement}}
+          ls -ltr
+          echo test,
