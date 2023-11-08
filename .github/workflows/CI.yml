@@ -1,32 +1,47 @@
 name: CI
+
 on:
- push: [main]
- workflow_dispatch :
-  inputs :
-   runner_id :
-    description : "Please pass the runner"
-    required : true
-    type: choice
-    option:
-     - ubuntu-latest
-     - windows-latest
- Jobs:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      runner_id:
+        description: "Please select the runner"
+        required: true
+        type: choice
+        options:
+          - ubuntu-latest
+          - windows-latest
+
+jobs:
   demorun:
-   strateges:
-    Matrix:
-     os: {ubuntu-latest,windows-latest}
-     runs-on: $ {{matrix.os}}
-     steps:
-      -uses: action/checkout@v3
-       with:demo
-      -run:
-       date > date.txt
-       git confing user.name github-actions-in-place
-       git conging user.email gethub-actions-in-place@no-reply.com
-       git add.
-       git commit -m 'dategenerated'
-       git push
-# run_only_on_windows:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Generate date file
+        run: |
+          date > date.txt
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions-in-place"
+          git config user.email "github-actions-in-place@no-reply.com"
+
+      - name: Commit and Push
+        run: |
+          git add .
+          git commit -m 'Date generated'
+          git push
+
+  run_only_on_windows:
     needs: demorun
     runs-on: windows-latest
     if: ${{ github.event.inputs.runner_id == 'windows-latest' }}
