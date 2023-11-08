@@ -1,16 +1,33 @@
 name: CI
 on:
- push:
-  branches : [main]
-jobs:
-  check-bats-version:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run:
-         date > date.txt
-         git confing user.name github-actions-in-place
-         git conging user.email gethub-actions-in-place@no-reply.com
-         git add.
-         git commit -m 'dategenerated'
-         git push
+ push: [main]
+ workflow_dispatch :
+  inputs :
+   runner_id :
+    description : "Please pass the runner"
+    required : true
+    type: choice
+    option:
+     - ubuntu-latest
+     - windows-latest
+ Jobs:
+  demorun:
+   strateges:
+    Matrix:
+     os: {ubuntu-latest,windows-latest}
+     runs-on: $ {{matrix.os}}
+     steps:
+      -uses: action/checkout@v3
+       with:demo
+      -run:
+       date > date.txt
+       git confing user.name github-actions-in-place
+       git conging user.email gethub-actions-in-place@no-reply.com
+       git add.
+       git commit -m 'dategenerated'
+       git push
+# runs a test
+ -name : run only on windows
+   if:$ {{github.event.inputs.runner_id is windows-latest}}
+      run:
+        dir
