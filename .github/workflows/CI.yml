@@ -26,8 +26,12 @@ on:
        git add.
        git commit -m 'dategenerated'
        git push
-# runs a test
- -name : run only on windows
-   if:$ {{github.event.inputs.runner_id is windows-latest}}
-      run:
-        dir
+# run_only_on_windows:
+    needs: demorun
+    runs-on: windows-latest
+    if: ${{ github.event.inputs.runner_id == 'windows-latest' }}
+
+    steps:
+      - name: Run a command on Windows
+        run: |
+          dir
